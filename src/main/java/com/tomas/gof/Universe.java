@@ -1,13 +1,11 @@
 package com.tomas.gof;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class Universe {
     private final int size;
     private final Cell[][] board;
-    private final List<Coordinate> coordinates;
+    private final Set<Coordinate> coordinates;
 
     /**
      *  Use to construct a universe of n x n size.
@@ -18,7 +16,7 @@ public class Universe {
     public Universe(int size) {
         this.size = size;
         this.board = new Cell[size][size];
-        this.coordinates = new ArrayList<>();
+        this.coordinates = new LinkedHashSet<>();
 
         setCoordinates();
         setCell();
@@ -35,7 +33,7 @@ public class Universe {
     public Universe(int size, int seed) {
         this.size = size;
         this.board = new Cell[size][size];
-        this.coordinates = new ArrayList<>();
+        this.coordinates = new LinkedHashSet<>();
 
         setCoordinates();
         setCell(seed);

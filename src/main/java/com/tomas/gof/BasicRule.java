@@ -18,6 +18,7 @@ public class BasicRule implements Rule {
     public void apply(Universe universe) {
         List<Coordinate> died = new ArrayList<>();
         List<Coordinate> reborn = new ArrayList<>();
+        List<Coordinate> survived = new ArrayList<>();
 
         List<Coordinate> coordinates = universe.getCoordinates();
         for (Coordinate coordinate : coordinates) {
@@ -28,6 +29,7 @@ public class BasicRule implements Rule {
             if (dead && liveNeighborCount == 3) reborn.add(coordinate);
             else if (live && liveNeighborCount < 2) died.add(coordinate);
             else if (live && liveNeighborCount > 3) died.add(coordinate);
+            else if (live) survived.add(coordinate);
         }
 
         for (Coordinate coordinate : died) {
@@ -35,6 +37,10 @@ public class BasicRule implements Rule {
         }
 
         for (Coordinate coordinate : reborn) {
+            universe.setLive(coordinate);
+        }
+
+        for (Coordinate coordinate : survived) {
             universe.setLive(coordinate);
         }
     }

@@ -2,7 +2,7 @@ package com.tomas.gof;
 
 public class Main {
     public static void main(String[] args) {
-        int numberOfGenerations = 5;
+        int numberOfGenerations = 10;
         int size = 6;
         int seed = 4;
 
