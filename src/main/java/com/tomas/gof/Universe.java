@@ -28,17 +28,16 @@ public class Universe {
      * a mix of live and dead cells.
      *
      * @param size of the universe
-     * @param seed use to randomize universe cell state
+     * @param seed to randomize universe cell state
      */
     public Universe(int size, int seed) {
-        this.size = size;
-        this.board = new Cell[size][size];
-        this.coordinates = new LinkedHashSet<>();
-
-        setCoordinates();
-        setCell(seed);
+        this(size);
+        randomize(seed);
     }
 
+    /**
+     * create board coordinate
+     */
     private void setCoordinates() {
         for (int x = 0; x < this.size; x++) {
             for (int y = 0; y < this.size; y++) {
@@ -48,23 +47,9 @@ public class Universe {
         }
     }
 
-    private void setCell(int seed) {
-        Cell.State[] states = Cell.State.values();
-        Random random = new Random(seed);
-
-        for (Coordinate coordinate : this.coordinates) {
-            int x = coordinate.x;
-            int y = coordinate.y;
-
-            int pseudorandom = random.nextInt(2);
-            Cell cell = new Cell();
-            Cell.State state = states[pseudorandom];
-            cell.setState(state);
-
-            board[x][y] = cell;
-        }
-    }
-
+    /**
+     * create dead cell and add it to the board
+     */
     private void setCell() {
         for (Coordinate coordinate : this.coordinates) {
             int x = coordinate.x;
@@ -74,6 +59,25 @@ public class Universe {
             cell.setDead();
 
             board[x][y] = cell;
+        }
+    }
+
+    /**
+     * use to randomize universe cell state
+     * @param seed to randomize
+     */
+    private void randomize(int seed) {
+        Cell.State[] states = Cell.State.values();
+        Random random = new Random(seed);
+
+        for (Coordinate coordinate : this.coordinates) {
+            int x = coordinate.x;
+            int y = coordinate.y;
+
+            int pseudorandom = random.nextInt(2);
+            Cell cell = board[x][y];
+            Cell.State state = states[pseudorandom];
+            cell.setState(state);
         }
     }
 
@@ -196,6 +200,7 @@ public class Universe {
         neighbors.add(coordinate.add(+ 1, + 0));
         neighbors.add(coordinate.add(+ 1, + 1));
 
+        //replace neighbor if out of bound
         for (int i = 0; i < neighbors.size(); i++) {
             Coordinate neighbor = neighbors.get(i);
 
