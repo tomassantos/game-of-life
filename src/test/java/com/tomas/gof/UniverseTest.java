@@ -183,4 +183,24 @@ public class UniverseTest {
         expected.add(Coordinate.valueOf(2,0));
         assertThat(neighbors, containsInAnyOrder(expected.toArray()));
     }
+
+    @Test
+    public void getLiveCount() {
+        int count = universe.getLiveCount();
+        assertThat(count, is(6));
+
+        universe.setLive(0, 0);
+        count = universe.getLiveCount();
+        assertThat(count, is(7));
+    }
+
+    @Test
+    public void getDeadCount() {
+        int count = universe.getDeadCount();
+        assertThat(count, is(3));
+
+        universe.setDead(0, 1);
+        count = universe.getDeadCount();
+        assertThat(count, is(4));
+    }
 }

@@ -46,4 +46,44 @@ public class CellTest {
         boolean live = cell.isLive();
         assertThat(live, is(true));
     }
+
+    @Test
+    public void wasDead() {
+        Cell cell = new Cell();
+        cell.setDead();
+        cell.setLive();
+
+        boolean wasDead = cell.wasDead();
+        assertThat(wasDead, is(true));
+    }
+
+    @Test
+    public void wasDead2() {
+        Cell cell = new Cell();
+        cell.setLive();
+        cell.setLive();
+
+        boolean wasDead = cell.wasDead();
+        assertThat(wasDead, is(false));
+    }
+
+    @Test
+    public void wasAlive() {
+        Cell cell = new Cell();
+        cell.setLive();
+        cell.setDead();
+
+        boolean wasAlive = cell.wasAlive();
+        assertThat(wasAlive, is(true));
+    }
+
+    @Test
+    public void wasAlive2() {
+        Cell cell = new Cell();
+        cell.setDead();
+        cell.setDead();
+
+        boolean wasAlive = cell.wasAlive();
+        assertThat(wasAlive, is(false));
+    }
 }

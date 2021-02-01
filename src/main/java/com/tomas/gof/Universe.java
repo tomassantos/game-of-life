@@ -2,10 +2,16 @@ package com.tomas.gof;
 
 import java.util.*;
 
+import static com.tomas.gof.Cell.State.DEAD;
+import static com.tomas.gof.Cell.State.ALIVE;
+
 public class Universe {
     private final int size;
     private final Cell[][] board;
-    private final Set<Coordinate> coordinates;
+
+    private final Set<Coordinate> coordinates = new LinkedHashSet<>();
+    private final Set<Coordinate> live = new LinkedHashSet<>();
+    private final Set<Coordinate> dead = new LinkedHashSet<>();
 
     /**
      *  Use to construct a universe of n x n size.
@@ -16,10 +22,9 @@ public class Universe {
     public Universe(int size) {
         this.size = size;
         this.board = new Cell[size][size];
-        this.coordinates = new LinkedHashSet<>();
 
         setCoordinates();
-        setCell();
+        setCells();
     }
 
     /**
@@ -31,8 +36,11 @@ public class Universe {
      * @param seed to randomize universe cell state
      */
     public Universe(int size, int seed) {
-        this(size);
-        randomize(seed);
+        this.size = size;
+        this.board = new Cell[size][size];
+
+        setCoordinates();
+        setCells(seed);
     }
 
     /**
@@ -50,15 +58,14 @@ public class Universe {
     /**
      * create dead cell and add it to the board
      */
-    private void setCell() {
+    private void setCells() {
         for (Coordinate coordinate : this.coordinates) {
             int x = coordinate.x;
             int y = coordinate.y;
 
-            Cell cell = new Cell();
-            cell.setDead();
-
+            Cell cell = Cell.valueOf(DEAD);
             board[x][y] = cell;
+            dead.add(coordinate);
         }
     }
 
@@ -66,7 +73,7 @@ public class Universe {
      * use to randomize universe cell state
      * @param seed to randomize
      */
-    private void randomize(int seed) {
+    private void setCells(int seed) {
         Cell.State[] states = Cell.State.values();
         Random random = new Random(seed);
 
@@ -75,9 +82,13 @@ public class Universe {
             int y = coordinate.y;
 
             int pseudorandom = random.nextInt(2);
-            Cell cell = board[x][y];
             Cell.State state = states[pseudorandom];
-            cell.setState(state);
+            Cell cell = Cell.valueOf(state);
+
+            board[x][y] = cell;
+
+            if (state == DEAD) dead.add(coordinate);
+            else if (state == ALIVE) live.add(coordinate);
         }
     }
 
@@ -113,6 +124,8 @@ public class Universe {
     public void setDead(Coordinate coordinate) {
         Cell cell = getCell(coordinate);
         cell.setDead();
+        live.remove(coordinate);
+        dead.add(coordinate);
     }
 
     /**
@@ -132,6 +145,8 @@ public class Universe {
     public void setLive(Coordinate coordinate) {
         Cell cell = getCell(coordinate);
         cell.setLive();
+        live.add(coordinate);
+        dead.remove(coordinate);
     }
 
     /**
@@ -142,6 +157,20 @@ public class Universe {
     public void setLive(int x, int y) {
         Coordinate coordinate = Coordinate.valueOf(x, y);
         setLive(coordinate);
+    }
+
+    /**
+     * @return number of live cells in the Universe
+     */
+    public int getLiveCount() {
+        return live.size();
+    }
+
+    /**
+     * @return number of dead cells in the Universe
+     */
+    public int getDeadCount() {
+        return dead.size();
     }
 
     /**
